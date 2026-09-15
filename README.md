@@ -4,13 +4,13 @@
 
 Warpflow is a Blender add-on for painting flow directions directly on a mesh. Draw a few strokes, adjust their handles, and watch the direction field update across the surface. Export the result as a PNG flowmap for your shader.
 
-**Blender 5.0+ · Windows x64 · Version 1.1.0**
+**Blender 5.0+ · Windows x64 · Version 1.0**
 
 ## Download
 
-### [Download Warpflow 1.1.0 for Windows](https://github.com/Ephaistophedes/Warpflow/raw/refs/heads/main/Warpflow-1.1.0-windows-x64.zip)
+### [Download Warpflow 1.0 for Windows](https://github.com/Ephaistophedes/Warpflow/releases/latest/download/Warpflow-1.0-windows-x64.zip)
 
-[SHA-256 checksum](Warpflow-1.1.0-windows-x64.zip.sha256) · [Installation](#installation) · [Quick start](#quick-start) · [Controls](#controls) · [Report an issue](https://github.com/Ephaistophedes/Warpflow/issues)
+[Release notes and checksum](https://github.com/Ephaistophedes/Warpflow/releases/latest) · [Installation](#installation) · [Quick start](#quick-start) · [Controls](#controls) · [Report an issue](https://github.com/Ephaistophedes/Warpflow/issues)
 
 Download the add-on ZIP using the link above. GitHub's **Code → Download ZIP** downloads the repository, which is not the Blender installer.
 
@@ -30,7 +30,7 @@ Download the add-on ZIP using the link above. GitHub's **Code → Download ZIP**
 
 ## Installation
 
-1. Download **Warpflow-1.1.0-windows-x64.zip** above. Keep it zipped.
+1. Download **Warpflow-1.0-windows-x64.zip** above. Keep it zipped.
 2. In Blender, open **Edit → Preferences → Add-ons**.
 3. Open the menu at the top right and choose **Install from Disk**.
 4. Select the downloaded ZIP and enable **Warpflow**.
@@ -111,10 +111,3 @@ Maintained by [Ephaistophedes](https://github.com/Ephaistophedes).
 ## License and credits
 
 Warpflow's Python code is licensed under **GNU GPL v3 or later**. See [LICENSE](LICENSE) and [third-party notices](THIRD_PARTY.md). The installer includes the add-on's Python source and dependency license notices.
-
-<details>
-<summary>Previous version</summary>
-
-[Download Warpflow 1.0.0 for Windows](https://github.com/Ephaistophedes/Warpflow/raw/refs/heads/main/Warpflow-1.0.0-windows-x64.zip) · [SHA-256 checksum](Warpflow-1.0.0-windows-x64.zip.sha256)
-
-</details>
