@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+warpflow/_vendor/
+dist/*
+!dist/Warpflow-1.0.0-windows-x64.zip
+!dist/Warpflow-1.0.0-windows-x64.zip.sha256
+tests/*_stdout.log
+tests/*_stderr.log
+tests/*.png
+tests/*_result.json
