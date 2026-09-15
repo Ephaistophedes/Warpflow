@@ -19,6 +19,7 @@ from mathutils.bvhtree import BVHTree
 from .geodesic import create_solver
 from .interpolation import FieldAccumulator
 from .uv import build_uv_data
+from .volumetric import create_volume_solver
 
 ATTRIBUTE = "Warpflow"
 ACTIVE = None
@@ -140,6 +141,10 @@ class PaintSession:
         self.window = context.window
         self.region = next((r for r in self.area.regions if r.type == 'WINDOW'), None) if self.area else None
         self.settings = context.scene.warpflow
+        # The solver topology is fixed for a session.  The sidebar keeps this
+        # choice disabled while painting so an existing history cannot silently
+        # change its distance domain mid-gesture.
+        self.distance_mode = self.settings.distance_mode
         self.scene_name = context.scene.name
         self.settings_dirty = False
         self.ended = False
@@ -172,20 +177,29 @@ class PaintSession:
         self.mirror_tolerance = max(float(np.linalg.norm(np.ptp(self.local_vertices, axis=0))) * 0.02, 1e-6)
         self.uv = build_uv_data(obj.data)
         update(0.12)
-        self.solver = create_solver(self.vertices, self.triangles, self.edges, progress=lambda v: update(0.12 + 0.48 * v))
+        if self.distance_mode == 'VOLUME':
+            self.solver = create_volume_solver(
+                self.vertices, self.triangles, resolution=self.settings.volume_resolution,
+                progress=lambda v: update(0.12 + 0.62 * v))
+        else:
+            self.solver = create_solver(self.vertices, self.triangles, self.edges,
+                                        progress=lambda v: update(0.12 + 0.48 * v))
         # Benchmark a solve at entry. A slow solve also selects proxy preview,
         # even when the configurable vertex threshold was not reached.
         start_solve = time.perf_counter()
         self.solver.distances([int(self.triangles[0, 0])])
         self.solve_ms = (time.perf_counter() - start_solve) * 1000
-        needs_proxy = len(self.vertices) > self.settings.proxy_threshold or self.solve_ms > 33
+        needs_proxy = (self.distance_mode == 'SURFACE'
+                       and (len(self.vertices) > self.settings.proxy_threshold or self.solve_ms > 33))
         face_edges = np.concatenate((self.triangles[:, [0, 1]], self.triangles[:, [1, 2]], self.triangles[:, [2, 0]]))
         face_edges.sort(axis=1)
         edge_pairs = np.sort(self.edges, axis=1)
         stride = len(self.vertices)
         has_wire_edges = np.any(~np.isin(edge_pairs[:, 0].astype(np.int64) * stride + edge_pairs[:, 1],
                                         face_edges[:, 0].astype(np.int64) * stride + face_edges[:, 1]))
-        if needs_proxy and has_wire_edges:
+        if self.distance_mode == 'VOLUME':
+            self.notice = 'Volumetric mode uses its interior voxel field for previews.'
+        elif needs_proxy and has_wire_edges:
             # Decimating faces cannot preserve loose-edge endpoints in general.
             # Keep the full graph so thin wire bridges do not disappear during
             # preview. This is an explicit topology-safe full-resolution fallback.

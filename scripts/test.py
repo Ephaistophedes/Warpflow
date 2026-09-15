@@ -24,7 +24,7 @@ def main():
     args = parser.parse_args()
     for name in ('test_geodesic.py', 'test_interpolation.py'):
         run([sys.executable, '-m', 'unittest', 'discover', '-s', 'tests', '-p', name])
-    for name in ('test_uv_bake_blender.py', 'test_proxy_blender.py', 'test_session_blender.py', 'test_dense_session_blender.py', 'test_stroke_edit_blender.py', 'test_mirror_blender.py'):
+    for name in ('test_uv_bake_blender.py', 'test_proxy_blender.py', 'test_session_blender.py', 'test_dense_session_blender.py', 'test_stroke_edit_blender.py', 'test_mirror_blender.py', 'test_volumetric_blender.py'):
         run([args.blender, '--background', '--factory-startup', '--python-exit-code', '1', '--python', 'tests/' + name])
     if args.ui:
         kwargs = {}

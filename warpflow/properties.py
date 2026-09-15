@@ -32,6 +32,8 @@ class WARPFLOW_PG_mesh(bpy.types.PropertyGroup):
 
 
 class WARPFLOW_PG_settings(bpy.types.PropertyGroup):
+    distance_mode: EnumProperty(name="Distance Mode", description="Surface follows the mesh; Volumetric follows paths through a closed mesh interior", items=[('SURFACE', 'Surface Geodesic', 'Follow the mesh surface with the heat method'), ('VOLUME', 'Volumetric', 'Follow paths through the closed mesh interior')], default='SURFACE', update=settings_changed)
+    volume_resolution: IntProperty(name="Volumetric Resolution", description="Interior voxel cells across the longest object dimension; higher values preserve narrower passages but take longer", default=48, min=24, max=120, update=settings_changed)
     mirror_x: BoolProperty(name="Mirror X", description="Mirror new strokes and linked endpoint edits across the object's local X=0 plane, from either side", default=False, update=settings_changed)
     sharpness: FloatProperty(name="Influence Sharpness", description="Inverse surface-distance exponent; higher values give tighter transitions", default=2.0, min=0.25, max=8.0, update=settings_changed)
     strength: FloatProperty(name="Strength", description="Blend the pre-stroke field toward this stroke's result, then normalize", default=1.0, min=0.0, max=1.0)

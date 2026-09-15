@@ -6,7 +6,7 @@ import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
 PACKAGE = ROOT / 'warpflow'
-OUTPUT = ROOT / 'dist' / 'Warpflow-1.0.0-windows-x64.zip'
+OUTPUT = ROOT / 'dist' / 'Warpflow-1.1.0-windows-x64.zip'
 
 
 def build():

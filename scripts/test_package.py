@@ -12,7 +12,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--blender', default='blender')
     args = parser.parse_args()
-    archive_path = ROOT / 'dist' / 'Warpflow-1.0.0-windows-x64.zip'
+    archive_path = ROOT / 'dist' / 'Warpflow-1.1.0-windows-x64.zip'
     # Context cleanup runs after the Blender subprocess releases native DLLs.
     with tempfile.TemporaryDirectory(prefix='warpflow-package-test-') as folder:
         isolated = Path(folder).resolve()
@@ -37,7 +37,7 @@ assert solver.stats['factorization_count'] == 2, solver.backend
 distance = solver.distances([0])
 assert np.all(np.isfinite(distance)) and distance[2] > distance[1]
 assert 'Warpflow' in warpflow.bl_info['name']
-assert warpflow.bl_info['version'] == (1, 0, 0)
+assert warpflow.bl_info['version'] == (1, 1, 0)
 from warpflow.properties import WARPFLOW_PG_stroke
 assert 'tip_vertices' in WARPFLOW_PG_stroke.bl_rna.properties.keys()
 warpflow.unregister()

@@ -7,7 +7,7 @@ Runtime validation was performed in **Blender 5.2.1 LTS on Windows x64**. Blende
 ## Install
 
 1. In Blender, open **Edit → Preferences → Add-ons**.
-2. Open the menu at the top right, choose **Install from Disk**, and select [`dist/Warpflow-1.0.0-windows-x64.zip`](dist/Warpflow-1.0.0-windows-x64.zip).
+2. Open the menu at the top right, choose **Install from Disk**, and select [`dist/Warpflow-1.1.0-windows-x64.zip`](dist/Warpflow-1.1.0-windows-x64.zip).
 3. Enable **Warpflow**. In the 3D View, press **N** and open the **Warpflow** tab.
 
 This is a legacy add-on ZIP, with a `warpflow/` package at its root. Select the ZIP without extracting it. See Blender's [legacy add-on installation instructions](https://docs.blender.org/manual/en/5.0/editors/preferences/addons.html#installing-legacy-add-ons).
@@ -99,6 +99,14 @@ Directions are expressed in the active UV map's tangent coordinates. UV islands 
 ## Geodesics, preview, and scaling
 
 The primary solver implements the **heat method of Crane, Weischedel, and Wardetzky**, from [*Geodesics in Heat* / *The Heat Method for Distance Computation*](https://www.cs.cmu.edu/~kmcrane/Projects/HeatMethod/). Triangle cotangent FEM stiffness, lumped mass, and the mesh adjacency are assembled on entry. SciPy sparse LU factors the heat system and an anchored Poisson system once; subsequent source queries reuse those factors. The heat time is mean edge length squared per connected component. Distance follows connected surface topology around holes and concavities, rather than Euclidean distance across space.
+
+### Surface or volumetric distance
+
+**Distance Mode** is chosen before entering Flow Paint Mode. **Surface Geodesic** is the default and keeps influence on the mesh shell. **Volumetric** voxelizes the closed mesh interior and computes 26-neighbor, Euclidean-weighted shortest paths through those interior cells. This lets influence pass directly through a solid object: on a closed limb, for example, a stroke on one side can reach the opposite side through its thickness instead of travelling around the exterior.
+
+Volumetric mode needs a **closed manifold** mesh: every triangle edge must be shared by exactly two triangles. It reports an actionable error for open shells, non-manifold edges, or a volume too thin for the selected grid. **Volumetric Resolution** controls cells across the longest object dimension (24–120; default 48). Raise it to retain narrow internal passages; this increases setup time, memory, and the one source solve per new or moved stroke. The grid is an approximation, and the displayed backend includes its actual grid dimensions. Its ordered grid solve follows the same shortest-path family as fast-marching distance-field methods; see [Kimmel and Sethian's description of the rectangular-grid method](https://math.berkeley.edu/~sethian/2006/Papers/sethian.kimmel.geodesics.pdf).
+
+The volume grid also replaces the surface decimation preview in volumetric sessions. Surface mode retains its existing proxy behavior. Switch modes after leaving paint mode; re-entering rebuilds the saved stroke history under the selected distance domain.
 
 Heat distances are numerical approximations. This implementation uses the ordinary cotangent FEM, without intrinsic Delaunay retriangulation or a tufted Laplacian, so poor triangles can affect accuracy. If SciPy is unavailable, factorization fails, a source solve degenerates, diffusion underflows on a very long thin surface, or a component contains wire/degenerate bridges, the solver exposes a **Dijkstra edge-distance approximation** in its backend/status. Its cached adjacency respects topology, but distance has tessellation and edge-direction bias and can be slower. The paint entry checks still reject zero-area faces and collapsed UV triangles.
 

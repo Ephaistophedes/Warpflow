@@ -26,6 +26,13 @@ class WARPFLOW_PT_paint(bpy.types.Panel):
                 layout.label(text='Select one mesh in Object Mode.', icon='INFO')
             elif not obj.data.uv_layers.active:
                 layout.label(text='An existing UV unwrap is required.', icon='ERROR')
+        distance = layout.column(align=True)
+        distance.enabled = not bool(active)
+        distance.prop(settings, 'distance_mode')
+        if settings.distance_mode == 'VOLUME':
+            distance.prop(settings, 'volume_resolution')
+            if not active:
+                layout.label(text='Volume requires a closed manifold mesh.', icon='INFO')
         layout.prop(settings, 'sharpness')
         layout.prop(settings, 'strength', slider=True)
         layout.prop(settings, 'mirror_x', toggle=True, icon='MOD_MIRROR')
@@ -45,7 +52,10 @@ class WARPFLOW_PT_paint(bpy.types.Panel):
             layout.operator('warpflow.delete_stroke', icon='X')
             box = layout.box()
             fallback = active.solver.stats.get('fallback_reason', '')
-            box.label(text='Surface heat solver' if not fallback else 'Graph distance approximation', icon='INFO')
+            if active.distance_mode == 'VOLUME':
+                box.label(text='Volumetric interior distance field', icon='INFO')
+            else:
+                box.label(text='Surface heat solver' if not fallback else 'Graph distance approximation', icon='INFO')
             if fallback:
                 for line in textwrap.wrap(fallback, width=max(24, context.region.width // 7 - 6)):
                     box.label(text=line)

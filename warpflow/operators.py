@@ -28,7 +28,8 @@ class WARPFLOW_OT_enter(bpy.types.Operator):
         wm = context.window_manager
         wm.progress_begin(0, 100)
         context.window.cursor_set('WAIT')
-        context.area.header_text_set('Warpflow: preparing surface solver and UV frames...')
+        mode = 'volumetric interior field' if context.scene.warpflow.distance_mode == 'VOLUME' else 'surface solver'
+        context.area.header_text_set(f'Warpflow: preparing {mode} and UV frames...')
         try:
             prepared = session.PaintSession(context, progress=lambda v: wm.progress_update(100 * v))
             session.ACTIVE = prepared

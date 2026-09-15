@@ -2,7 +2,7 @@
 bl_info = {
     'name': 'Warpflow',
     'author': 'Warpflow contributors',
-    'version': (1, 0, 0),
+    'version': (1, 1, 0),
     'blender': (5, 0, 0),
     'location': '3D View > Sidebar > Warpflow',
     'description': 'Paint directional constraints and bake full-coverage surface flowmaps',
